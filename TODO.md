@@ -1,0 +1,5 @@
+-   [x] Add a button above the current form section to open the "Add New Progress Entry" modal
+-   [x] Move the existing "Add New Progress Entry" form into a new modal div with appropriate styling
+-   [x] Add JavaScript event listeners to open and close the new modal
+-   [x] Test the modal functionality to ensure it opens, closes, and submits correctly
+-   [x] Fix modal display issues on small screens by adding responsive padding, max-height, and overflow scrolling

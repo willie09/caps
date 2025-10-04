@@ -45,6 +45,6 @@ class MembershipExpiryNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
                     ->subject('Your Membership is About to Expire')
-                    ->view('members.list', ['member' => $this->member]);
+                    ->view('emails.membership_expiry', ['member' => $this->member]);
     }
 }

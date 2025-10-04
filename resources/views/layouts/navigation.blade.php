@@ -15,21 +15,32 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('members.list')" :active="request()->routeIs('members.list')">
-                        {{ __('Members') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('walkins')" :active="request()->routeIs('walkins')">
-                        {{ __('Walk-ins') }}
-                    </x-nav-link>
-                     <x-nav-link :href="route('finance')" :active="request()->routeIs('finance')">
-                        {{ __('Financial Management') }}
-                    </x-nav-link>
-<x-nav-link :href="route('inventory')" :active="request()->routeIs('inventory')">
-    {{ __('Inventory') }}
-</x-nav-link>
-<x-nav-link :href="route('orders')" :active="request()->routeIs('orders')">
-    {{ __('Orders') }}
-</x-nav-link>
+                    @if(auth()->user()->role === 'admin')
+                        <x-nav-link :href="route('members.list')" :active="request()->routeIs('members.list')">
+                            {{ __('Members') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('trainors')" :active="request()->routeIs('trainors')">
+                            {{ __('Trainors') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.attendance')" :active="request()->routeIs('admin.attendance')">
+                            {{ __('Attendance') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('walkins')" :active="request()->routeIs('walkins')">
+                            {{ __('Walk-ins') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('finance')" :active="request()->routeIs('finance')">
+                            {{ __('Financial Management') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('inventory')" :active="request()->routeIs('inventory')">
+                            {{ __('Inventory') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('orders')" :active="request()->routeIs('orders')">
+                            {{ __('Orders') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('admin.workout_plans.index')" :active="request()->routeIs('admin.workout_plans.index')">
+                            {{ __('Workout Plans') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -82,21 +93,32 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('members.list')" :active="request()->routeIs('members.list')">
-                {{ __('Members') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('walkins')" :active="request()->routeIs('walkins')">
-                {{ __('Walk-ins') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('finance')" :active="request()->routeIs('finance')">
-                {{ __('Financial Management') }}
-            </x-responsive-nav-link>
-<x-responsive-nav-link :href="route('inventory')" :active="request()->routeIs('inventory')">
-    {{ __('Inventory') }}
-</x-responsive-nav-link>
-<x-responsive-nav-link :href="route('orders')" :active="request()->routeIs('orders')">
-    {{ __('Orders') }}
-</x-responsive-nav-link>
+            @if(auth()->user()->role === 'admin')
+                <x-responsive-nav-link :href="route('members.list')" :active="request()->routeIs('members.list')">
+                    {{ __('Members') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('trainors')" :active="request()->routeIs('trainors')">
+                    {{ __('Trainors') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.attendance')" :active="request()->routeIs('admin.attendance')">
+                    {{ __('Attendance') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('walkins')" :active="request()->routeIs('walkins')">
+                    {{ __('Walk-ins') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('finance')" :active="request()->routeIs('finance')">
+                    {{ __('Financial Management') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('inventory')" :active="request()->routeIs('inventory')">
+                    {{ __('Inventory') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('orders')" :active="request()->routeIs('orders')">
+                    {{ __('Orders') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.workout_plans.index')" :active="request()->routeIs('admin.workout_plans.index')">
+                    {{ __('Workout Plans') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
 

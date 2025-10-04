@@ -11,7 +11,7 @@ class InventoryController extends Controller
     {
         $inventories = \App\Models\Inventory::orderBy('date', 'desc')->get();
         $products = \App\Models\Product::all();
-        return view('inventory', compact('inventories', 'products'));
+        return view('admin.inventory', compact('inventories', 'products'));
     }
 
     public function store(Request $request)
@@ -25,12 +25,14 @@ class InventoryController extends Controller
 
         $inventory = Inventory::create($validated);
 
-        // Add inventory amount to expenses
-        \App\Models\Expense::create([
-            'name' => 'Inventory: ' . $validated['name'],
-            'date' => $validated['date'],
-            'amount' => $validated['amount'],
-        ]);
+        // Add inventory amount to expenses if checkbox is checked
+        if ($request->has('add_to_expenses')) {
+            \App\Models\Expense::create([
+                'name' => 'Inventory: ' . $validated['name'],
+                'date' => $validated['date'],
+                'amount' => $validated['amount'],
+            ]);
+        }
 
         return redirect()->route('inventory')->with('success', 'Inventory added successfully.');
     }

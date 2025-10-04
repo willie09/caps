@@ -5,30 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Member;
 use App\Models\WalkInLog;
 use App\Models\Expense;
+use App\Models\Sale;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Calculate total sales from members
-        $membershipPrices = [
-            'basic' => 500,
-            'premium' => 700,
-            'vip' => 1000,
-        ];
-        $members = Member::all();
-        $totalMemberSales = 0;
-        foreach ($members as $member) {
-            $type = $member->membership_type;
-            if (isset($membershipPrices[$type])) {
-                $totalMemberSales += $membershipPrices[$type];
-            }
-        }
-
-        // Calculate total sales from walk-ins
-        $walkInSales = WalkInLog::sum('amount');
-
-        $totalSales = $totalMemberSales + $walkInSales;
+        // Calculate total sales from Sale model (includes memberships, renewals, walk-ins)
+        $totalSales = Sale::sum('amount');
 
         // Calculate total expenses
         $totalExpenses = Expense::sum('amount');
@@ -36,23 +20,17 @@ class DashboardController extends Controller
         // Calculate net worth
         $netWorth = $totalSales - $totalExpenses;
 
-        // Calculate monthly income (members + walk-ins)
-        $monthlyIncomeMembers = Member::selectRaw("DATE_FORMAT(join_date, '%Y-%m') as month, membership_type")
-            ->get()
-            ->groupBy('month')
-            ->map(function ($group) use ($membershipPrices) {
-                return $group->sum(function ($member) use ($membershipPrices) {
-                    return $membershipPrices[$member->membership_type] ?? 0;
-                });
-            });
+        // Additional metrics
+        $totalMembers = \App\Models\Member::count();
+        $totalTrainors = \App\Models\Trainor::count();
+        $totalProducts = \App\Models\Product::count();
+        $salesThisMonth = Sale::whereMonth('sale_date', now()->month)->whereYear('sale_date', now()->year)->count();
+        $recentSales = Sale::latest('sale_date')->take(5)->get();
 
-        $monthlyIncomeWalkIns = WalkInLog::selectRaw("DATE_FORMAT(date, '%Y-%m') as month, SUM(amount) as total")
+        // Calculate monthly income from Sale model
+        $monthlyIncome = Sale::selectRaw("DATE_FORMAT(sale_date, '%Y-%m') as month, SUM(amount) as total")
             ->groupBy('month')
             ->pluck('total', 'month');
-
-        $monthlyIncome = $monthlyIncomeMembers->merge($monthlyIncomeWalkIns)->map(function ($value, $key) use ($monthlyIncomeMembers, $monthlyIncomeWalkIns) {
-            return ($monthlyIncomeMembers->get($key, 0) ?? 0) + ($monthlyIncomeWalkIns->get($key, 0) ?? 0);
-        });
 
         // Calculate monthly expenses
         $monthlyExpenses = Expense::selectRaw("DATE_FORMAT(date, '%Y-%m') as month, SUM(amount) as total")
@@ -72,10 +50,15 @@ class DashboardController extends Controller
             return $monthlyExpenses->get($month, 0);
         });
 
-        return view('dashboard', [
+        return view('admin.dashboard', [
             'totalSales' => $totalSales,
             'totalExpenses' => $totalExpenses,
             'netWorth' => $netWorth,
+            'totalMembers' => $totalMembers,
+            'totalTrainors' => $totalTrainors,
+            'totalProducts' => $totalProducts,
+            'salesThisMonth' => $salesThisMonth,
+            'recentSales' => $recentSales,
             'chartMonths' => $months,
             'chartIncomeData' => $incomeData,
             'chartExpensesData' => $expensesData,
